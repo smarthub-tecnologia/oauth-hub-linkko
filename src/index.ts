@@ -58,7 +58,6 @@ import * as meta from "./meta";
 import * as evidence from "./evidence";
 import { tServer, localesScript, normalizeLang, reloadLocales } from "./i18n";
 import { parseWebhook } from "./webhook-parse";
-import { attachTerminal, isTerminalEnabled } from "./terminal";
 import { Channel, ChannelPublic, ChannelType, ForwardDest, ForwardProduct, MetaApp, WebhookEvent } from "./types";
 
 const app = express();
@@ -173,7 +172,7 @@ function sanitizeForwards(input: any): ForwardDest[] {
 // PUBLIC bootstrap + login
 // ─────────────────────────────────────────────────────────────────────────────
 app.get("/api/bootstrap", apiLimiter, (_req: Request, res: Response) => {
-  res.json({ brandName: getBrand(), adminAuthEnabled: !!ADMIN_PASSWORD, terminalEnabled: isTerminalEnabled() });
+  res.json({ brandName: getBrand(), adminAuthEnabled: !!ADMIN_PASSWORD, terminalEnabled: false });
 });
 
 app.post("/api/login", loginLimiter, (req: Request, res: Response) => {
@@ -895,5 +894,3 @@ const server = app.listen(PORT, () => {
   console.log(`  apps:        ${store.listApps().length} registered`);
   console.log(`  per-app webhook: ${PUBLIC_URL}/webhook/app/<appKey>\n`);
 });
-
-attachTerminal(server, !!ADMIN_PASSWORD);
